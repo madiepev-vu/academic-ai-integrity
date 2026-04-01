@@ -76,6 +76,46 @@
     .mod-group:hover .mod-ring { opacity: 0.55; }
     /* footer */
     .footer { text-align: center; font-size: 11px; color: rgba(255,255,255,0.20); margin-top: 64px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.07); }
+    /* hook section */
+    .hook { margin-bottom: 48px; }
+    .hook-headline {
+      font-size: clamp(22px, 3.2vw, 32px); font-weight: 700; line-height: 1.35;
+      color: white; max-width: 680px; margin-bottom: 28px;
+    }
+    .hook-headline em {
+      font-style: normal; color: #FFB300; font-weight: 800;
+    }
+    .hook-sub {
+      font-size: 16px; line-height: 1.75; color: rgba(255,255,255,0.55); max-width: 620px; margin-bottom: 36px;
+    }
+    .hook-sub strong { color: rgba(255,255,255,0.88); }
+    .hook-visual { position: relative; }
+    .hook-stars { position: absolute; top: -20px; right: -24px; width: 100%; height: 110%; pointer-events: none; overflow: visible; }
+    .hook-visual > *:not(.hook-stars) { position: relative; z-index: 1; }
+    .scale-wrap { max-width: 680px; margin-bottom: 14px; }
+    .scale-label-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+    .scale-label { font-size: 12px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+    .scale-track { position: relative; height: 18px; border-radius: 9px; background: rgba(255,255,255,0.06); overflow: visible; margin: 32px 0; }
+    .scale-fill { position: absolute; top: 0; left: 0; height: 100%; border-radius: 9px; }
+    .scale-marker { position: absolute; top: -12px; width: 4px; height: 42px; border-radius: 2px; background: white; }
+    .scale-marker-label {
+      position: absolute; font-size: 12px; font-weight: 700; white-space: nowrap;
+      color: rgba(255,255,255,0.72);
+    }
+    .scale-marker-label.above { bottom: 50px; transform: translateX(-50%); }
+    .scale-marker-label.below { top: 50px; transform: translateX(-50%); }
+    .scale-caption { font-size: 13px; color: rgba(255,255,255,0.38); margin-top: 44px; }
+    .stat-row { display: flex; gap: 32px; flex-wrap: wrap; margin-top: 32px; margin-bottom: 8px; }
+    .stat-card {
+      flex: 1; min-width: 160px; padding: 20px 22px; border-radius: 12px;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    }
+    .stat-num { font-size: 32px; font-weight: 800; line-height: 1; margin-bottom: 6px; }
+    .stat-num.blue { color: #6a9fe8; }
+    .stat-num.amber { color: #FFB300; }
+    .stat-num.pink { color: #DF407A; }
+    .stat-desc { font-size: 13px; line-height: 1.55; color: rgba(255,255,255,0.50); }
+    .stat-desc strong { color: rgba(255,255,255,0.78); }
   </style>
 </head>
 <body>
@@ -88,6 +128,168 @@
     <p class="tagline">A shared starting point for students and teachers</p>
   </header>
 
+  <!-- ══ HOOK: COLLISION COURSE ══ -->
+  <style>
+    .hook-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+    }
+    @media (max-width: 800px) {
+      .hook-grid { grid-template-columns: 1fr; }
+    }
+    
+    /* Interactive Student Concerns Nodes */
+    .concern-node {
+      cursor: pointer;
+    }
+    .concern-bg {
+      transition: fill 0.3s, transform 0.3s;
+      transform-origin: center;
+    }
+    .concern-label {
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      transform: translateY(10px);
+      pointer-events: none;
+    }
+    .concern-node:hover .concern-bg {
+      fill: #FFB300;
+      transform: scale(1.15);
+      filter: drop-shadow(0 0 10px rgba(255,179,0,0.8));
+    }
+    .concern-node:hover .concern-label {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .concern-ring {
+      animation: pulse-ring 2s infinite ease-out;
+      transform-origin: center;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+  </style>
+
+  <section class="section hook hook-visual">
+    <div class="hook-grid">
+      <!-- Left side: Text & The 1,2,3 from Compass -->
+      <div class="hook-text">
+        <p class="hook-headline" style="font-size: clamp(28px, 4vw, 40px); margin-bottom: 16px;">
+          Universities are building walls.<br>
+          <em>Students are launching rockets.</em>
+        </p>
+        <p class="hook-sub" style="font-size: 16px; margin-bottom: 32px; line-height: 1.6;">
+          Our review across <strong>hundreds of disciplines</strong> reveals the gap isn't about ethics—it's communication. Students don't want to cheat. They're searching for <strong>rules of engagement</strong> in a system that refuses to write them.
+        </p>
+
+        <!-- Injecting the 1, 2, 3 from the Compass Page -->
+        <div class="stat-row" style="flex-direction: column; gap: 16px; margin-top: 0;">
+          <div class="stat-card" style="background: transparent; border: none; padding: 0; display: flex; align-items: center; gap: 16px;">
+            <div class="stat-num blue" style="font-size: 28px; margin: 0;">01.</div>
+            <p class="stat-desc" style="font-size: 14px; color: white;"><strong>Unify</strong> expectations across all disciplines.</p>
+          </div>
+          <div class="stat-card" style="background: transparent; border: none; padding: 0; display: flex; align-items: center; gap: 16px;">
+            <div class="stat-num amber" style="font-size: 28px; margin: 0;">02.</div>
+            <p class="stat-desc" style="font-size: 14px; color: white;"><strong>Guide</strong> student judgment when using tools.</p>
+          </div>
+          <div class="stat-card" style="background: transparent; border: none; padding: 0; display: flex; align-items: center; gap: 16px;">
+            <div class="stat-num pink" style="font-size: 28px; margin: 0;">03.</div>
+            <p class="stat-desc" style="font-size: 14px; color: white;"><strong>Evaluate</strong> with standard, transparent frameworks.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right side: Dedicated Interactive SVG -->
+      <div class="hook-graphic">
+        <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width: 100%; height: auto; overflow: visible;">
+          <defs>
+            <linearGradient id="orbit-grad1-iter" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FFB300" stop-opacity="0" />
+              <stop offset="50%" stop-color="#FFB300" stop-opacity="0.8" />
+              <stop offset="100%" stop-color="#FFB300" stop-opacity="0" />
+            </linearGradient>
+            <linearGradient id="orbit-grad2-iter" x1="100%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#DF407A" stop-opacity="0" />
+              <stop offset="50%" stop-color="#DF407A" stop-opacity="0.8" />
+              <stop offset="100%" stop-color="#DF407A" stop-opacity="0" />
+            </linearGradient>
+            <linearGradient id="orbit-grad3-iter" x1="50%" y1="0%" x2="50%" y2="100%">
+              <stop offset="0%" stop-color="#6a9fe8" stop-opacity="0" />
+              <stop offset="50%" stop-color="#6a9fe8" stop-opacity="0.8" />
+              <stop offset="100%" stop-color="#6a9fe8" stop-opacity="0" />
+            </linearGradient>
+
+            <filter id="glow-iter">
+              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+          
+          <!-- Background stars & space -->
+          <circle cx="100" cy="50" r="1.5" fill="white" opacity="0.3"/>
+          <circle cx="400" cy="450" r="1" fill="white" opacity="0.2"/>
+          <circle cx="50" cy="300" r="2" fill="white" opacity="0.1"/>
+          <circle cx="450" cy="150" r="1.5" fill="white" opacity="0.4"/>
+          
+          <!-- The Disconnected Orbits (Teacher vs Student vs Institution) -->
+          <ellipse cx="250" cy="250" rx="180" ry="60" fill="none" stroke="url(#orbit-grad1-iter)" stroke-width="2" transform="rotate(-30 250 250)" />
+          <ellipse cx="250" cy="250" rx="180" ry="60" fill="none" stroke="url(#orbit-grad2-iter)" stroke-width="2" transform="rotate(30 250 250)" />
+          <ellipse cx="250" cy="250" rx="200" ry="40" fill="none" stroke="url(#orbit-grad3-iter)" stroke-width="2" transform="rotate(90 250 250)" />
+          
+          <!-- Central Collision glowing node -->
+          <circle cx="250" cy="250" r="20" fill="none" stroke="#DF407A" stroke-width="2" class="concern-ring"/>
+          <circle cx="250" cy="250" r="8" fill="#ffffff" filter="url(#glow-iter)"/>
+          <circle cx="250" cy="250" r="4" fill="#DF407A"/>
+          <text x="250" y="275" fill="white" font-size="10" font-weight="bold" text-anchor="middle" opacity="0.5" letter-spacing="1px">THE GAP</text>
+
+          <!-- Interactive Node 1: Student Concern -->
+          <g class="concern-node" transform="translate(110, 160)">
+             <circle cx="0" cy="0" r="16" fill="rgba(255,179,0,0.1)" class="concern-bg"/>
+             <circle cx="0" cy="0" r="12" fill="#FFB300"/>
+             <text x="0" y="1" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system,sans-serif" font-size="11" font-weight="800" fill="#061228">1</text>
+             <g class="concern-label">
+               <rect x="-80" y="-55" width="160" height="40" rx="4" fill="#061228" stroke="#FFB300" stroke-width="1"/>
+               <text x="0" y="-40" fill="white" font-size="10" font-weight="bold" text-anchor="middle">Student Concern</text>
+               <text x="0" y="-25" fill="#aaa" font-size="9" text-anchor="middle">"What if I'm falsely accused?"</text>
+             </g>
+          </g>
+
+          <!-- Interactive Node 2: Teacher Expectation -->
+          <g class="concern-node" transform="translate(390, 340)">
+             <circle cx="0" cy="0" r="16" fill="rgba(223,64,122,0.1)" class="concern-bg"/>
+             <circle cx="0" cy="0" r="12" fill="#DF407A"/>
+             <text x="0" y="1" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system,sans-serif" font-size="11" font-weight="800" fill="white">2</text>
+             <g class="concern-label">
+               <rect x="-80" y="-55" width="160" height="40" rx="4" fill="#061228" stroke="#DF407A" stroke-width="1"/>
+               <text x="0" y="-40" fill="white" font-size="10" font-weight="bold" text-anchor="middle">Teacher Dilemma</text>
+               <text x="0" y="-25" fill="#aaa" font-size="9" text-anchor="middle">"How do I grade this fairly?"</text>
+             </g>
+          </g>
+
+          <!-- Interactive Node 3: Rules of Engagement -->
+          <g class="concern-node" transform="translate(250, 60)">
+             <circle cx="0" cy="0" r="16" fill="rgba(106,159,232,0.1)" class="concern-bg"/>
+             <circle cx="0" cy="0" r="12" fill="#6a9fe8"/>
+             <text x="0" y="1" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system,sans-serif" font-size="11" font-weight="800" fill="white">3</text>
+             <g class="concern-label">
+               <rect x="-80" y="-55" width="160" height="40" rx="4" fill="#061228" stroke="#6a9fe8" stroke-width="1"/>
+               <text x="0" y="-40" fill="white" font-size="10" font-weight="bold" text-anchor="middle">Institution Policy</text>
+               <text x="0" y="-25" fill="#aaa" font-size="9" text-anchor="middle">"We are still drafting the guidelines."</text>
+             </g>
+          </g>
+
+        </svg>
+      </div>
+    </div>
+  </section>
   <hr class="rule">
 
   <!-- ══ INTRO ══ -->
@@ -760,7 +962,7 @@
 })();
 </script>
 
-</html>
+
 <!-- VERSION FINDER NAV -->
 <style>
   .opt-nav {
@@ -797,8 +999,8 @@
   }
 </style>
 <div class="opt-nav">
-  <a href="index-v2.html" class="nav-orig active">Original</a>
-  <a href="index-v2-opt1.html" class="nav-opt1">Option 1: Collision</a>
+  <a href="index-v2.html" class="nav-orig">Original</a>
+  <a href="index-v2-opt1.html" class="nav-opt1 active">Option 1: Collision</a>
   <a href="index-v2-opt3.html" class="nav-opt3">Option 2: Compass</a>
 </div>
 </body>
