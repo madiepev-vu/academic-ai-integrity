@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phases of Visibility &mdash; AI in Education</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #061228; color: white;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      overflow: hidden; user-select: none;
+    }
+    .scene { position: relative; width: 100vw; height: 100vh; }
+    svg { display: block; width: 100%; height: 100%; }
+
+    /* ── Card ── */
+    .insight-card {
+      position: absolute; width: 360px;
+      background: rgba(12, 37, 88, 0.97);
+      border: 1px solid rgba(106, 159, 232, 0.22);
+      border-radius: 14px; padding: 24px 28px;
+      pointer-events: none; opacity: 0; transform: translateY(8px);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+      z-index: 10;
+    }
+    .insight-card.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .insight-card .card-overline {
+      font-size: 10.5px; font-weight: 700; letter-spacing: 1.4px;
+      text-transform: uppercase; margin-bottom: 8px; transition: color 0.3s;
+    }
+    .insight-card h3 {
+      font-size: 17px; font-weight: 700; color: white; margin-bottom: 10px; line-height: 1.3;
+    }
+    .insight-card p {
+      font-size: 14px; line-height: 1.75; color: rgba(255,255,255,0.68);
+    }
+    .insight-card .card-hint {
+      margin-top: 16px; font-size: 11px; color: rgba(255,255,255,0.22); font-style: italic;
+    }
+
+    /* ── Face indicator ── */
+    .face-bar {
+      position: absolute; bottom: 48px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 6px; align-items: center; z-index: 5;
+    }
+    .face-pip {
+      width: 28px; height: 4px; border-radius: 2px;
+      background: rgba(255,255,255,0.08);
+      transition: all 0.5s; cursor: pointer;
+    }
+    .face-pip.active {
+      background: rgba(255,255,255,0.50);
+      box-shadow: 0 0 8px rgba(255,255,255,0.15);
+    }
+    .face-pip:hover { background: rgba(255,255,255,0.25); }
+
+    .epigraph {
+      position: absolute; bottom: 16px; left: 0; right: 0;
+      text-align: center; font-size: 13.5px; color: rgba(255,255,255,0.20);
+      font-style: italic; letter-spacing: 0.3px;
+    }
+    .page-header {
+      position: absolute; top: 28px; left: 0; right: 0; text-align: center;
+      z-index: 5; pointer-events: none;
+    }
+    .page-header .overline {
+      font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+      color: rgba(255,255,255,0.28); margin-bottom: 6px;
+    }
+    .page-header h1 {
+      font-size: clamp(22px, 3.5vw, 34px); font-weight: 800; line-height: 1.15;
+      background: linear-gradient(130deg, #ffffff 25%, #6a9fe8 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 4px;
+    }
+    .page-header .subtitle {
+      font-size: 15px; color: rgba(255,255,255,0.32); font-weight: 400;
+    }
+    .drag-hint {
+      position: absolute; bottom: 72px; left: 50%; transform: translateX(-50%);
+      font-size: 11px; color: rgba(255,255,255,0.18); letter-spacing: 0.8px;
+      text-transform: uppercase; font-weight: 600; transition: opacity 0.6s;
+    }
+  </style>
+</head>
+<body>
+
+<div class="scene" id="scene">
+
+  <div class="page-header">
+    <p class="overline">AI in education</p>
+    <h1>Phases of visibility</h1>
+    <p class="subtitle">What you see depends on which side faces you</p>
+  </div>
+
+  <svg id="main-svg" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <filter id="moon-glow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="14" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+
+      <!-- Moon surface base -->
+      <radialGradient id="moon-base" cx="38%" cy="38%">
+        <stop offset="0%"  stop-color="#4a4e58"/>
+        <stop offset="60%" stop-color="#2e3038"/>
+        <stop offset="100%" stop-color="#1a1c22"/>
+      </radialGradient>
+
+      <!-- Illumination: light from upper-left -->
+      <radialGradient id="illumination" cx="30%" cy="32%" r="68%">
+        <stop offset="0%"  stop-color="rgba(210,218,240,0.38)"/>
+        <stop offset="45%" stop-color="rgba(160,170,200,0.15)"/>
+        <stop offset="70%" stop-color="rgba(80,90,120,0.0)"/>
+        <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+      </radialGradient>
+
+      <!-- Shadow: darken the unlit side -->
+      <linearGradient id="shadow-side" x1="0" y1="0" x2="1" y2="0.3">
+        <stop offset="0%"  stop-color="rgba(0,0,0,0)"/>
+        <stop offset="40%" stop-color="rgba(0,0,0,0)"/>
+        <stop offset="70%" stop-color="rgba(4,10,24,0.35)"/>
+        <stop offset="100%" stop-color="rgba(4,10,24,0.65)"/>
+      </linearGradient>
+
+      <!-- Limb darkening -->
+      <radialGradient id="limb-darken" cx="50%" cy="50%">
+        <stop offset="50%" stop-color="transparent"/>
+        <stop offset="100%" stop-color="rgba(6,18,40,0.50)"/>
+      </radialGradient>
+
+      <clipPath id="moon-clip"><circle cx="0" cy="0" r="150"/></clipPath>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1000" height="800" fill="#061228"/>
+    <circle cx="500" cy="400" r="400" fill="#0d1e55" opacity="0.18"/>
+    <circle cx="500" cy="400" r="240" fill="#0f2468" opacity="0.10"/>
+
+    <!-- Stars -->
+    <g opacity="0.60"><line x1="78" y1="72" x2="86" y2="80" stroke="white" stroke-width="1.3" stroke-linecap="round"/><line x1="78" y1="80" x2="86" y2="72" stroke="white" stroke-width="1.3" stroke-linecap="round"/></g>
+    <g opacity="0.45"><line x1="912" y1="95" x2="918" y2="101" stroke="white" stroke-width="1.2" stroke-linecap="round"/><line x1="912" y1="101" x2="918" y2="95" stroke="white" stroke-width="1.2" stroke-linecap="round"/></g>
+    <g opacity="0.35"><line x1="140" y1="680" x2="146" y2="686" stroke="white" stroke-width="1" stroke-linecap="round"/><line x1="140" y1="686" x2="146" y2="680" stroke="white" stroke-width="1" stroke-linecap="round"/></g>
+    <g opacity="0.30"><line x1="870" y1="640" x2="876" y2="646" stroke="white" stroke-width="1" stroke-linecap="round"/><line x1="870" y1="646" x2="876" y2="640" stroke="white" stroke-width="1" stroke-linecap="round"/></g>
+    <circle cx="250" cy="110" r="1.5" fill="white" opacity="0.40"/>
+    <circle cx="720" cy="78"  r="1.5" fill="white" opacity="0.35"/>
+    <circle cx="940" cy="200" r="1"   fill="white" opacity="0.25"/>
+    <circle cx="55"  cy="420" r="1"   fill="white" opacity="0.18"/>
+    <circle cx="160" cy="300" r="1.2" fill="white" opacity="0.28"/>
+    <circle cx="880" cy="340" r="1"   fill="white" opacity="0.20"/>
+    <circle cx="800" cy="710" r="1.3" fill="white" opacity="0.22"/>
+    <circle cx="310" cy="720" r="1"   fill="white" opacity="0.18"/>
+    <circle cx="650" cy="130" r="1.4" fill="white" opacity="0.26"/>
+    <circle cx="420" cy="55"  r="1"   fill="white" opacity="0.20"/>
+    <circle cx="950" cy="500" r="3.5" fill="#009CDE" opacity="0.25"/>
+    <circle cx="60"  cy="190" r="3"   fill="#009CDE" opacity="0.22"/>
+    <circle cx="200" cy="580" r="2.5" fill="#DF407A" opacity="0.18"/>
+
+    <!-- ═══ THE MOON ═══ -->
+    <g transform="translate(500,400) rotate(16)" id="moon-group">
+
+      <!-- Soft glow behind -->
+      <circle cx="0" cy="0" r="168" fill="none" stroke="rgba(160,180,220,0.04)" stroke-width="1.5"/>
+
+      <!-- Base surface -->
+      <circle cx="0" cy="0" r="150" fill="url(#moon-base)" filter="url(#moon-glow)"/>
+
+      <!-- Crater texture -->
+      <circle cx="-42" cy="-52" r="18" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1.2"/>
+      <circle cx="-20" cy="-30" r="8"  fill="rgba(255,255,255,0.015)"/>
+      <circle cx="55"  cy="25"  r="22" fill="none" stroke="rgba(255,255,255,0.035)" stroke-width="1"/>
+      <circle cx="30"  cy="35"  r="6"  fill="rgba(255,255,255,0.012)"/>
+      <circle cx="-22" cy="60"  r="12" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+      <circle cx="70"  cy="-55" r="9"  fill="none" stroke="rgba(255,255,255,0.025)" stroke-width="1"/>
+      <circle cx="-72" cy="10"  r="14" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+      <circle cx="15"  cy="-75" r="7"  fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="1"/>
+      <circle cx="-55" cy="-20" r="5"  fill="rgba(255,255,255,0.01)"/>
+      <circle cx="85"  cy="-15" r="10" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="0.8"/>
+      <circle cx="-10" cy="90"  r="8"  fill="none" stroke="rgba(255,255,255,0.018)" stroke-width="0.8"/>
+      <circle cx="45"  cy="-80" r="6"  fill="none" stroke="rgba(255,255,255,0.015)" stroke-width="0.8"/>
+
+      <!-- Subtle mare (dark patches) -->
+      <ellipse cx="-30" cy="-15" rx="35" ry="25" fill="rgba(0,0,0,0.08)" transform="rotate(-15)"/>
+      <ellipse cx="40"  cy="40"  rx="28" ry="18" fill="rgba(0,0,0,0.06)" transform="rotate(25)"/>
+      <ellipse cx="-15" cy="55"  rx="20" ry="14" fill="rgba(0,0,0,0.05)" transform="rotate(-8)"/>
+
+      <!-- Illumination (bright upper-left) -->
+      <circle cx="0" cy="0" r="150" fill="url(#illumination)"/>
+
+      <!-- Shadow on unlit side -->
+      <circle cx="0" cy="0" r="150" fill="url(#shadow-side)"/>
+
+      <!-- Limb darkening -->
+      <circle cx="0" cy="0" r="150" fill="url(#limb-darken)"/>
+
+      <!-- Words that live on the surface (positioned by JS) -->
+      <g id="words-g" clip-path="url(#moon-clip)"></g>
+
+      <!-- Outline -->
+      <circle cx="0" cy="0" r="150" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+
+      <!-- Hit target -->
+      <circle cx="0" cy="0" r="160" fill="transparent" style="cursor:grab" id="moon-hit"/>
+    </g>
+  </svg>
+
+  <!-- Insight card -->
+  <div class="insight-card" id="insight-card">
+    <div class="card-overline" id="card-overline">Facing you now</div>
+    <h3 id="card-title"></h3>
+    <p id="card-text"></p>
+    <p class="card-hint" id="card-hint">Drag the moon to rotate &middot; click a word to read more</p>
+  </div>
+
+  <div class="drag-hint" id="drag-hint">drag to rotate</div>
+  <div class="face-bar" id="face-bar"></div>
+
+  <p class="epigraph">No single view reveals everything at once</p>
+</div>
+
+<script>
+(function() {
+
+  const faces = [
+    { label: 'Efficiency',   title: 'Efficiency & productivity',   bright: '#5ec49a',
+      text: 'AI can automate feedback, generate materials, and reduce administrative burden. But efficiency is not neutral \u2014 what becomes faster also reshapes what is valued.' },
+    { label: 'Pedagogy',     title: 'Pedagogical transformation',  bright: '#a48adb',
+      text: 'AI enables personalised learning paths and adaptive support. Yet it also risks replacing the productive struggle that drives deep learning with frictionless completion.' },
+    { label: 'Authorship',   title: 'Authorship & ownership',      bright: '#d4aa5a',
+      text: 'When AI generates substantial portions of academic work, traditional notions of intellectual ownership blur. The question shifts from \u201cwho wrote this?\u201d to \u201cwho thought this?\u201d' },
+    { label: 'Equity',       title: 'Access & epistemic equity',   bright: '#6a9fe8',
+      text: 'AI tools are unevenly distributed. Students with better access, prompting skills, or paid subscriptions gain advantages that existing assessment was not designed to detect.' },
+    { label: 'Environment',  title: 'Environmental impact',        bright: '#5ec4a0',
+      text: 'Training and running large language models consumes significant energy and water. Scaling AI across education multiplies this cost, yet it rarely enters the adoption conversation.' },
+    { label: 'Trust',        title: 'Trust & institutional culture', bright: '#d46a9a',
+      text: 'When AI use is widespread but norms are unclear, suspicion grows. Teachers question student work, students question each other, and the relational fabric of education frays.' }
+  ];
+
+  const N = faces.length;
+  const SECTOR = (2 * Math.PI) / N;
+  const R = 150;
+  const NS = 'http://www.w3.org/2000/svg';
+  const FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
+
+  const wordsG   = document.getElementById('words-g');
+  const moonHit  = document.getElementById('moon-hit');
+  const card     = document.getElementById('insight-card');
+  const cardTitle = document.getElementById('card-title');
+  const cardText  = document.getElementById('card-text');
+  const cardOverline = document.getElementById('card-overline');
+  const cardHint  = document.getElementById('card-hint');
+  const faceBar   = document.getElementById('face-bar');
+  const dragHint  = document.getElementById('drag-hint');
+
+  /* ── Create word elements ──
+     Each word is placed at a different latitude so they don't overlap.
+     The <g> wrapper handles translate, the inner <text> handles scaleX.
+  */
+  const wordEls = [];
+  const wordGroups = [];
+  // Stagger latitudes (in radians) so words sit at different heights on the globe
+  const latitudes = [-0.32, 0.12, -0.12, 0.32, -0.52, 0.52];
+
+  faces.forEach((f, i) => {
+    const g = document.createElementNS(NS, 'g');
+    g.style.cursor = 'pointer';
+    g.dataset.idx = i;
+
+    const txt = document.createElementNS(NS, 'text');
+    txt.setAttribute('text-anchor', 'middle');
+    txt.setAttribute('dominant-baseline', 'middle');
+    txt.setAttribute('font-family', FONT);
+    txt.setAttribute('font-size', '16');
+    txt.setAttribute('font-weight', '600');
+    txt.setAttribute('fill', 'white');
+    txt.setAttribute('letter-spacing', '1.5');
+    txt.textContent = f.label;
+    g.appendChild(txt);
+    wordsG.appendChild(g);
+    wordEls.push(txt);
+    wordGroups.push(g);
+
+    // Face-bar pip
+    const pip = document.createElement('div');
+    pip.classList.add('face-pip');
+    pip.dataset.idx = i;
+    pip.title = f.label;
+    pip.addEventListener('click', () => snapToFace(i));
+    faceBar.appendChild(pip);
+  });
+
+  /* ── State ── */
+  let rotation = 0;
+  let autoRotate = true;
+  let dragging = false;
+  let animating = false;
+  let animTarget = 0;
+  let activeRegion = -1;
+  let dragStartX = 0;
+  let dragStartRot = 0;
+  let lastFront = -1;
+
+  const AUTO_SPEED = 0.0016;
+
+  function norm(a) { return Math.atan2(Math.sin(a), Math.cos(a)); }
+
+  /* ── Sphere projection ──
+     Each word sits at a (longitude, latitude) on the sphere.
+     Orthographic projection for rotation around the vertical axis:
+       px = R · cos(lat) · sin(lon + rot)
+       py = −R · sin(lat)
+       scaleX = cos(lon + rot)          ← foreshortening
+       frontness = cos(lon + rot)       ← >0 means front hemisphere
+     Illumination is from the upper-left: words further left & up are brighter.
+  */
+
+  function getWordProjection(i, rot) {
+    const lon = (i + 0.5) * SECTOR;
+    const lat = latitudes[i];
+    const rel = norm(lon + rot);
+    const frontness = Math.cos(rel);
+
+    // Behind the sphere
+    if (frontness <= 0.02) return null;
+
+    const cosLat = Math.cos(lat);
+    const px = R * cosLat * Math.sin(rel);
+    const py = -R * Math.sin(lat);
+    const scaleX = frontness;  // foreshortening
+
+    // Illumination: light from upper-left
+    // Combine horizontal position (left = lit) and vertical (top = lit)
+    const litH = Math.max(0, 1.0 - (px / R + 0.25) * 0.85);
+    const litV = Math.max(0.3, 1.0 - (py / R + 0.3) * 0.4);
+    const lit = litH * litV;
+
+    const opacity = Math.pow(frontness, 0.6) * lit;
+    return { px, py, scaleX, opacity };
+  }
+
+  function getFrontFace() {
+    let best = 0, bestVal = -2;
+    for (let i = 0; i < N; i++) {
+      const p = getWordProjection(i, rotation);
+      const v = p ? p.opacity : 0;
+      if (v > bestVal) { bestVal = v; best = i; }
+    }
+    return best;
+  }
+
+  /* ── Card ── */
+  function showCard(idx) {
+    const f = faces[idx];
+    cardTitle.textContent = f.title;
+    cardText.textContent = f.text;
+    cardOverline.style.color = f.bright;
+    cardOverline.textContent = 'Facing you now \u2014 ' + f.label;
+    card.classList.add('visible');
+    activeRegion = idx;
+    positionCard();
+  }
+  function hideCard() { card.classList.remove('visible'); activeRegion = -1; }
+
+  function positionCard() {
+    const svg = document.getElementById('main-svg');
+    const rect = svg.getBoundingClientRect();
+    const sx = rect.width / 1000;
+    const moonSX = rect.left + 500 * sx;
+    const moonSY = rect.top + 400 * (rect.height / 800);
+    const moonSR = R * sx;
+    const cw = 360, ch = card.offsetHeight || 200;
+    let left = moonSX + moonSR + 28, top = moonSY - ch / 2;
+    if (left + cw > window.innerWidth - 16) left = moonSX - moonSR - cw - 28;
+    if (top < 10) top = 10;
+    if (top + ch > window.innerHeight - 10) top = window.innerHeight - ch - 10;
+    card.style.left = left + 'px';
+    card.style.top = top + 'px';
+  }
+
+  function snapToFace(i) {
+    animating = true; autoRotate = false;
+    // Target: face i center visible in lit area
+    // We want rel ≈ LIGHT_ANGLE, so rotation = -(i+0.5)*SECTOR - LIGHT_ANGLE...
+    // Actually, we want the word to be at its brightest, which is slightly left of center.
+    const target = -(i + 0.5) * SECTOR + 0.3;
+    let diff = target - rotation;
+    while (diff > Math.PI) diff -= 2 * Math.PI;
+    while (diff < -Math.PI) diff += 2 * Math.PI;
+    animTarget = rotation + diff;
+  }
+
+  /* ══ RENDER LOOP ══ */
+  function tick() {
+    if (animating) {
+      const diff = animTarget - rotation;
+      if (Math.abs(diff) < 0.003) {
+        rotation = animTarget;
+        animating = false;
+        setTimeout(() => { autoRotate = true; }, 3000);
+      } else {
+        rotation += diff * 0.09;
+      }
+    } else if (autoRotate && !dragging) {
+      rotation += AUTO_SPEED;
+    }
+
+    // ── Update words on sphere surface ──
+    for (let i = 0; i < N; i++) {
+      const p = getWordProjection(i, rotation);
+      if (p && p.opacity > 0.03) {
+        // Position the group, then scaleX the text for foreshortening
+        wordGroups[i].setAttribute('transform',
+          `translate(${p.px.toFixed(1)},${p.py.toFixed(1)})`);
+        wordEls[i].setAttribute('transform', `scale(${p.scaleX.toFixed(3)},1)`);
+        wordEls[i].setAttribute('opacity', p.opacity.toFixed(3));
+        wordGroups[i].style.display = '';
+      } else {
+        wordGroups[i].style.display = 'none';
+      }
+    }
+
+    // ── Face pips ──
+    const front = getFrontFace();
+    document.querySelectorAll('.face-pip').forEach(pip => {
+      pip.classList.toggle('active', parseInt(pip.dataset.idx) === front);
+    });
+
+    // ── Auto-show card ──
+    if (!dragging && activeRegion === -1 && front !== lastFront) {
+      lastFront = front;
+      showCard(front);
+    }
+    if (activeRegion >= 0) positionCard();
+
+    requestAnimationFrame(tick);
+  }
+
+  /* ── Word click ── */
+  wordGroups.forEach(g => {
+    g.addEventListener('click', e => {
+      e.stopPropagation();
+      const i = parseInt(g.dataset.idx);
+      const p = getWordProjection(i, rotation);
+      if (p && p.opacity > 0.1) {
+        autoRotate = false;
+        showCard(i);
+        cardHint.textContent = 'Click elsewhere to resume';
+      }
+    });
+  });
+
+  /* ── Drag ── */
+  moonHit.addEventListener('mousedown', e => { e.preventDefault(); startDrag(e.clientX); });
+  moonHit.addEventListener('touchstart', e => { e.preventDefault(); startDrag(e.touches[0].clientX); }, { passive: false });
+
+  function startDrag(x) {
+    dragging = true; animating = false; autoRotate = false;
+    dragStartX = x; dragStartRot = rotation;
+    moonHit.style.cursor = 'grabbing';
+    dragHint.style.opacity = '0';
+    hideCard(); lastFront = -1;
+  }
+
+  document.addEventListener('mousemove', e => { if (dragging) updateDrag(e.clientX); });
+  document.addEventListener('touchmove', e => { if (dragging) updateDrag(e.touches[0].clientX); }, { passive: false });
+
+  function updateDrag(x) {
+    rotation = dragStartRot - (x - dragStartX) * (Math.PI / 220);
+  }
+
+  document.addEventListener('mouseup', endDrag);
+  document.addEventListener('touchend', endDrag);
+
+  function endDrag() {
+    if (!dragging) return;
+    dragging = false;
+    moonHit.style.cursor = 'grab';
+    lastFront = -1;
+    setTimeout(() => { if (!dragging && !animating) autoRotate = true; }, 3000);
+  }
+
+  /* ── Background click ── */
+  document.getElementById('scene').addEventListener('click', e => {
+    if (e.target.closest('#moon-group')) return;
+    hideCard(); lastFront = -1;
+    if (!dragging) setTimeout(() => { autoRotate = true; }, 500);
+  });
+
+  requestAnimationFrame(tick);
+
+})();
+</script>
+
+</body>
+</html>
