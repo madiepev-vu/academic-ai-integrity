@@ -595,6 +595,15 @@
         }
         .btn-continue:hover { opacity: 0.87; }
 
+        .btn-certificate {
+            display: inline-flex; align-items: center; gap: 6px;
+            margin-top: 12px; padding: 12px 28px; border-radius: 10px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white; font-size: 14px; font-weight: 700;
+            text-decoration: none; cursor: pointer; transition: opacity 0.2s;
+        }
+        .btn-certificate:hover { opacity: 0.87; }
+
         .source-note { margin-top: 28px; font-size: 11px; color: #cbd5e1; text-align: center; line-height: 1.6; }
 
         @keyframes fadeUp {
@@ -714,6 +723,7 @@
         <button class="btn-restart" onclick="startQuiz()">Try again</button>
         <a href="../evaluate.html" class="btn-back-nav">Back to Evaluate</a>
         <a href="../ethics.html" class="btn-continue">Continue to Ethics &rsaquo;</a>
+        <button class="btn-certificate" onclick="openCertificate('pilot','evaluate')">Download Certificate</button>
     </div>
 
     <p class="source-note">
@@ -1041,6 +1051,14 @@ function showEndScreen() {
 
     document.getElementById('end-title').textContent = titles[Math.min(score, 4)];
     document.getElementById('end-body').textContent  = bodies[Math.min(score, 4)];
+
+    /* ── Certificate tracking ── */
+    try {
+        localStorage.setItem('cert_pilot_evaluate', JSON.stringify({
+            completed: true, score: score, total: 5,
+            date: new Date().toISOString()
+        }));
+    } catch(e) {}
 }
 
 /* ── Annotation overlay ── */
@@ -1073,6 +1091,8 @@ function restoreOutputText() {
 
 startQuiz();
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="../certificate.js"></script>
 
 </body>
 </html>

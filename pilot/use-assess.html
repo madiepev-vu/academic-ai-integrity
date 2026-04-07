@@ -780,6 +780,17 @@ Format the output as a clear comparison table or structured breakdown that could
         </div>
     </div>
 
+    <!-- Certificate button (shown after both exercises completed) -->
+    <div id="cert-section" style="display:none; text-align:center; margin-top:28px;">
+        <button class="btn-certificate" onclick="openCertificate('pilot','use')" style="
+            display:inline-flex; align-items:center; gap:6px;
+            padding:12px 28px; border-radius:10px; border:none;
+            background:linear-gradient(135deg, #f59e0b, #d97706);
+            color:white; font-size:14px; font-weight:700;
+            cursor:pointer; font-family:inherit; transition:opacity 0.2s;
+        ">Download Certificate</button>
+    </div>
+
     <p class="source-note">
         Research paradigm content is standard methodology curriculum. Prompt design based on techniques from: Qian, Y. (2025).
         <em>Journal of Educational Computing Research, 63</em>(7-8), 1782–1818.
@@ -823,7 +834,23 @@ function revealPrompt(n) {
     setTimeout(() => {
         revealed.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
+
+    /* ── Certificate tracking: mark complete when both exercises revealed ── */
+    const r1 = document.getElementById('revealed-prompt-1');
+    const r2 = document.getElementById('revealed-prompt-2');
+    if (r1 && r1.classList.contains('visible') && r2 && r2.classList.contains('visible')) {
+        try {
+            localStorage.setItem('cert_pilot_use', JSON.stringify({
+                completed: true, score: 2, total: 2,
+                date: new Date().toISOString()
+            }));
+        } catch(e) {}
+        var cs = document.getElementById('cert-section');
+        if (cs) cs.style.display = 'block';
+    }
 }
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="../certificate.js"></script>
 </body>
 </html>
