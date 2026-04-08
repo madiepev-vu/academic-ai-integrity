@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Know — Academic AI Integrity</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #061228;
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background-image:
+        radial-gradient(circle at 20% 10%, rgba(122, 124, 255, 0.25) 0%, transparent 40%),
+        radial-gradient(circle at 90% 20%, rgba(255, 115, 194, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 65% 85%, rgba(131, 244, 255, 0.15) 0%, transparent 40%),
+        linear-gradient(145deg, #07123a 0%, #031122 100%);
+    }
+    .page { max-width: 1020px; margin: 0 auto; padding: 48px 24px 64px; }
+    .back-btn { display: inline-block; margin-bottom: 32px; padding: 10px 18px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.25); border-radius: 8px; color: #e0e7ff; text-decoration: none; font-weight: 600; }
+    .back-btn:hover { background: rgba(255,255,255,0.15); }
+    .section { margin-bottom: 56px; }
+    .overline { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 12px; }
+    h1 { font-size: 2.2rem; font-weight: 800; line-height: 1.1; background: linear-gradient(130deg, #e0e7ff 20%, #a78bfa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 12px; }
+    h2 { font-size: 1.5rem; font-weight: 700; color: #e8ebff; line-height: 1.25; margin: 32px 0 16px; }
+    h3 { font-size: 1.1rem; font-weight: 700; color: #f0f4ff; margin: 20px 0 10px; }
+    .body-text { font-size: 1rem; line-height: 1.75; color: rgba(255,255,255,0.75); max-width: 700px; }
+    .body-text strong { color: rgba(255,255,255,0.95); font-weight: 600; }
+    .body-text a { color: #c4b5fd; text-decoration: underline; font-weight: 500; }
+    .highlight-block { background: rgba(139, 92, 246, 0.15); border-left: 3px solid #a78bfa; padding: 16px; border-radius: 8px; margin: 16px 0; }
+    .highlight-block strong { color: #e9d5ff; }
+    hr { border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 40px 0; }
+    .video-container { background: rgba(6, 12, 40, 0.8); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 0; overflow: hidden; margin: 24px 0 8px; }
+    .video-inner { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
+    .video-inner iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+    .video-caption { font-size: 0.85rem; color: rgba(255,255,255,0.55); text-align: center; padding: 8px; }
+    .ethics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 20px 0; }
+    .ethics-card, .tool-card { background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(167, 139, 250, 0.4); border-radius: 12px; padding: 14px; }
+    .tool-card:hover { border-color: rgba(167, 139, 250, 0.6); }
+    .ethics-card h4, .tool-card h4 { color: #c4b5fd; margin-bottom: 8px; font-size: 0.98rem; }
+    .ethics-card p, .tool-card p { font-size: 0.92rem; color: rgba(255,255,255,0.78); line-height: 1.6; margin: 0; }
+    .tool-card small { display: block; color: rgba(255,255,255,0.55); margin-top: 10px; }
+    .tool-card-title { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .tool-logo { width: 36px; height: 36px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; color: white; }
+    .how-it-works { background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(167, 139, 250, 0.3); border-radius: 12px; padding: 20px; margin: 20px 0; }
+    .how-it-works h4 { color: #e9d5ff; margin-bottom: 14px; font-size: 1rem; }
+    .step-visual { display: flex; gap: 12px; margin-bottom: 16px; align-items: flex-start; }
+    .step-number { width: 32px; height: 32px; min-width: 32px; background: linear-gradient(135deg, #8b5cf6, #f472b6); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; }
+    .step-text { flex: 1; }
+    .step-text p { font-size: 0.9rem; color: rgba(255,255,255,0.8); line-height: 1.6; margin: 0; }
+    .quiz-box { background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(167, 139, 250, 0.3); border-radius: 12px; padding: 20px; margin: 20px 0; }
+    .quiz-item { margin-bottom: 18px; }
+    .quiz-q { font-weight: 600; color: #f0f4ff; margin-bottom: 10px; font-size: 0.95rem; }
+    .quiz-options label { display: flex; align-items: center; margin-bottom: 8px; color: rgba(255,255,255,0.8); font-size: 0.9rem; cursor: pointer; }
+    .quiz-options input { margin-right: 8px; cursor: pointer; }
+    .quiz-btn { background: linear-gradient(130deg, #8b5cf6, #f472b6); border: none; color: white; padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 14px; }
+    .quiz-btn:hover { opacity: 0.9; }
+    .quiz-result { margin-top: 12px; padding: 10px 12px; border-radius: 6px; color: #e9d5ff; font-size: 0.9rem; }
+    .result-good { background: rgba(34, 197, 94, 0.25); color: #86efac; }
+    .result-needs-work { background: rgba(249, 115, 113, 0.14); color: #fecaca; }
+    .question-step { display: none; }
+    .question-step.active { display: block; }
+    .answer-feedback { margin-top: 12px; padding: 12px; border-radius: 10px; font-size: 0.92rem; }
+    .answer-correct { background: rgba(34, 197, 94, 0.14); border: 1px solid rgba(34, 197, 94, 0.25); color: #d9f99d; }
+    .answer-wrong { background: rgba(248, 113, 113, 0.14); border: 1px solid rgba(248, 113, 113, 0.3); color: #fecaca; }
+    .assess-boxes { display: flex; gap: 16px; margin: 24px 0; flex-wrap: wrap; }
+    .assess-box { flex: 1; min-width: 200px; padding: 18px; border: 1.5px solid rgba(167, 139, 250, 0.4); border-radius: 12px; background: rgba(99, 102, 241, 0.08); text-decoration: none; color: inherit; }
+    .assess-box:hover { background: rgba(99, 102, 241, 0.12); border-color: rgba(167, 139, 250, 0.6); }
+    .assess-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #a78bfa; margin-bottom: 6px; }
+    .assess-title { font-size: 1.1rem; font-weight: 700; color: #e0e7ff; margin-bottom: 6px; }
+    .assess-desc { font-size: 0.85rem; color: rgba(255,255,255,0.7); line-height: 1.5; }
+    .flip-card { perspective: 1000px; height: 180px; cursor: pointer; position: relative; }
+    .flip-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+    .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+    .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 14px; background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(167, 139, 250, 0.4); border-radius: 12px; }
+    .flip-card-back { transform: rotateY(180deg); }
+    .flip-card-front h4 { color: #c4b5fd; font-size: 0.98rem; margin-bottom: 8px; width: 100%; }
+    .flip-card-front .flip-hint { color: rgba(255,255,255,0.45); font-size: 0.75rem; margin-top: auto; font-style: italic; }
+    .flip-card-back p { color: rgba(255,255,255,0.78); font-size: 0.92rem; line-height: 1.6; margin: 0; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <a class="back-btn" href="index-v2.html">← Back to home</a>
+
+  <header class="section">
+    <p class="overline">Module: Building AI literacy</p>
+    <h1>Know: Understanding AI tools and their limitations</h1>
+    <p class="body-text">Generative AI is now a regular part of academic life. This module helps you understand how these tools work, why they sometimes fail, how to evaluate them ethically, and how to use them responsibly in your work.</p>
+  </header>
+
+  <hr>
+
+  <section class="section">
+    <h2>What AI really does (and doesn't)</h2>
+    <div class="video-container">
+      <div class="video-inner">
+        <iframe src="https://www.youtube.com/embed/MaRyiz19HpM" title="Understanding AI tools and their limitations" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      </div>
+    </div>
+    <div class="video-caption">Watch this short introduction to understand the foundations of language models</div>
+  </section>
+
+  <section class="section">
+    <h2>Why AI hallucinates: How language models really work</h2>
+    <p class="body-text">Language models don't "know" or "understand" in the way humans do. Instead, they learn patterns from huge amounts of text and then predict the next word, one word at a time. Think of it like autocomplete on your phone—except trained on billions of sentences.</p>
+    
+    <div class="how-it-works">
+      <h4>👁️ How hallucinations happen</h4>
+      
+      <div class="step-visual">
+        <div class="step-number">1</div>
+        <div class="step-text">
+          <p><strong>Prediction, not retrieval.</strong> The model does not search a library of facts. It generates text based on statistical patterns. That means it can invent details that are fluent and convincing.</p>
+        </div>
+      </div>
+
+      <div class="step-visual">
+        <div class="step-number">2</div>
+        <div class="step-text">
+          <p><strong>Connecting dots without a source.</strong> When a question isn't exactly in its training data, the model fills the gap by combining fragments and language patterns. That can create a response that looks like a fact, even if no real evidence supports it.</p>
+        </div>
+      </div>
+
+      <div class="step-visual">
+        <div class="step-number">3</div>
+        <div class="step-text">
+          <p><strong>Plausible, polished, and hard to verify.</strong> Hallucinations often sound complete and detailed, which makes them easy to trust. The real test is whether the claim is backed by a verifiable source, not whether it sounds familiar.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-block">
+      <strong>Key takeaway:</strong> AI outputs are drafts, not facts. Always verify claims against reliable sources before using them in your work—whether in essays, research, or assignments.
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Quick check: Spotting hallucinations</h2>
+    <p class="body-text">Test your understanding of why AI can go wrong—and how to catch it.</p>
+
+    <div class="quiz-box">
+      <div id="question1" class="question-step active">
+        <div class="quiz-q">Q1: An AI gives a plausible answer to a topic that is not clearly documented online. Which signal is strongest that you should verify the output?</div>
+        <div class="quiz-options">
+          <label><input type="radio" name="answer1" value="a"> The language is fluent and confident</label>
+          <label><input type="radio" name="answer1" value="b"> The answer contains an exact statistic or citation but no source link</label>
+          <label><input type="radio" name="answer1" value="c"> The answer is short and generic</label>
+        </div>
+        <button class="quiz-btn" onclick="submitQuizAnswer(1)">Submit answer</button>
+        <div id="feedback1" class="answer-feedback" style="display:none;"></div>
+      </div>
+
+      <div id="question2" class="question-step">
+        <div class="quiz-q">Q2: Which property makes a document-only tool like ChatPDF more trustworthy for source-based checks?</div>
+        <div class="quiz-options">
+          <label><input type="radio" name="answer2" value="a"> It prevents the model from inventing content outside the uploaded file</label>
+          <label><input type="radio" name="answer2" value="b"> It uses a simpler interface so students make fewer mistakes</label>
+          <label><input type="radio" name="answer2" value="c"> It automatically rewrites the source material into simpler language</label>
+        </div>
+        <button class="quiz-btn" onclick="submitQuizAnswer(2)">Submit answer</button>
+        <div id="feedback2" class="answer-feedback" style="display:none;"></div>
+      </div>
+
+      <div id="question3" class="question-step">
+        <div class="quiz-q">Q3: If an AI gives a citation that sounds real, what is the best next step?</div>
+        <div class="quiz-options">
+          <label><input type="radio" name="answer3" value="a"> Check the citation in a library database or Google Scholar</label>
+          <label><input type="radio" name="answer3" value="b"> Ask the AI for another citation on the same topic</label>
+          <label><input type="radio" name="answer3" value="c"> Use the citation because it seems credible</label>
+        </div>
+        <button class="quiz-btn" onclick="submitQuizAnswer(3)">Submit answer</button>
+        <div id="feedback3" class="answer-feedback" style="display:none;"></div>
+      </div>
+
+      <div id="quiz-summary" class="quiz-result" style="display:none;"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Evaluating tools: ethics, vision, and values alignment</h2>
+    <p class="body-text">Not all AI tools are the same. Before you adopt one for coursework, it's worth asking: <strong>Who made this? What is their goal? Does this match my values?</strong></p>
+
+    <h3>What to research about an AI tool</h3>
+    <div class="ethics-grid">
+      <div class="flip-card" onclick="toggleFlip(this)">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <h4>🏢 Who's behind it?</h4>
+            <div class="flip-hint">Click to see what to look for →</div>
+          </div>
+          <div class="flip-card-back">
+            <p>Is it an academic research team, a startup, a big tech company, or an open-source community? Each has different incentives (profit, impact, openness, or a mix).</p>
+          </div>
+        </div>
+      </div>
+      <div class="flip-card" onclick="toggleFlip(this)">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <h4>🎯 What's their stated mission?</h4>
+            <div class="flip-hint">Click to see what to look for →</div>
+          </div>
+          <div class="flip-card-back">
+            <p>Do they prioritize safety, accessibility, accuracy, or commercial growth? Read their blog or "About" page. Are they transparent?</p>
+          </div>
+        </div>
+      </div>
+      <div class="flip-card" onclick="toggleFlip(this)">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <h4>🔒 Data and privacy</h4>
+            <div class="flip-hint">Click to see what to look for →</div>
+          </div>
+          <div class="flip-card-back">
+            <p>Do they store your inputs? Can you delete your data? Is there a student/educational version with stronger privacy? Read the privacy policy (seriously).</p>
+          </div>
+        </div>
+      </div>
+      <div class="flip-card" onclick="toggleFlip(this)">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <h4>♻️ Environmental & social impact</h4>
+            <div class="flip-hint">Click to see what to look for →</div>
+          </div>
+          <div class="flip-card-back">
+            <p>Have they published data on carbon footprint or model training? Do they address bias in their outputs? Transparency here is rare but increasingly expected.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Questions to ask before adoption</h3>
+    <ul style="color: rgba(255,255,255,0.8); line-height: 1.8; margin-left: 18px;">
+      <li><strong>Does this tool align with my values?</strong> If you care about privacy, avoid tools that share your data. If you care about environmental impact, favor tools that prioritise efficiency or publish carbon reports.</li>
+      <li><strong>Is this tool appropriate for the task?</strong> A document-chat tool (ChatPDF, Explain Paper) is better for verifiable text. A general chatbot (ChatGPT) is better for brainstorming or drafting prompts.</li>
+      <li><strong>What's my fallback plan?</strong> If the tool breaks, changes its terms, or becomes unavailable, can you still complete your work using other resources?</li>
+      <li><strong>Have I checked for bias?</strong> Test it with diverse prompts and sources. Does it represent different perspectives fairly?</li>
+    </ul>
+
+    <h3>Values to compare</h3>
+    <ul style="color: rgba(255,255,255,0.8); line-height: 1.8; margin-left: 18px;">
+      <li><strong>Environmental impact:</strong> look for energy efficiency reporting, small model options, or published carbon estimates.</li>
+      <li><strong>Data privacy:</strong> look for GDPR compliance, clear data retention policies, and the ability to delete user inputs.</li>
+      <li><strong>Transparency:</strong> look for model cards, published audits, or open-source code that explain how the system works.</li>
+      <li><strong>AI vision:</strong> look for evidence that the company values responsible use, education, and harm reduction rather than purely growth or engagement.</li>
+    </ul>
+
+    <div class="highlight-block">
+      <strong>Try this:</strong> Pick a tool you're considering (ChatGPT, Perplexity, Jenni.ai, etc.). Go to their company blog or research page and find their stated values or safety priorities. You don't have to agree, but you should know where they stand.
+    </div>
+
+    <h3>Example research: ChatGPT vs Google Gemini</h3>
+    <div class="ethics-grid">
+      <div class="tool-card">
+        <div class="tool-card-title"><span class="tool-logo" style="background:#0f172a;">C</span><h4>ChatGPT (OpenAI)</h4></div>
+        <p><strong>Who is behind it?</strong> OpenAI is a research lab and capped-profit company founded in 2015, with a mission to ensure artificial general intelligence benefits all of humanity.</p>
+        <p><strong>Vision:</strong> OpenAI publishes safety research and model cards, and frames its work around long-term alignment and equitable access, though it remains a proprietary model provider.</p>
+        <p><strong>Privacy:</strong> OpenAI may retain user prompts and outputs to improve models unless you opt out via organisational settings. Free users should assume interactions may be logged.</p>
+        <p><strong>Environmental impact:</strong> OpenAI has shared some efficiency goals and model scaling research, but it does not publish a detailed carbon footprint report for every model.</p>
+        <small>Transparency note: OpenAI publishes research papers and summaries, but the core GPT model weights are not open source.</small>
+      </div>
+      <div class="tool-card">
+        <div class="tool-card-title"><span class="tool-logo" style="background:linear-gradient(135deg,#4285f4,#9c27b0);">G</span><h4>Google Gemini</h4></div>
+        <p><strong>Who is behind it?</strong> Gemini is developed by Google / DeepMind and is part of Google's broader AI product strategy, built on Google's AI principles and product ecosystem.</p>
+        <p><strong>Vision:</strong> Google positions Gemini as a general assistant that is helpful, safe, and grounded in Google’s existing services, with a strong emphasis on product integration and trusted usage.</p>
+        <p><strong>Privacy:</strong> Gemini is governed by Google's account and privacy policies, including EU data protection for European users. Google offers control settings for data collection and use.</p>
+        <p><strong>Environmental impact:</strong> Google publishes sustainability goals and claims carbon-neutral operations for its data centres, but specific Gemini training emissions are not fully detailed.</p>
+        <small>Transparency note: Google shares many research papers and principles, but the Gemini model itself is not open source.</small>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Overview of relevant AI tools</h2>
+    <p class="body-text">Below is a curated overview of conversational AI tools relevant to academic work. Most offer a free version with core functionality, alongside a paid tier for advanced features. Select a tool to see a simulated example of what it looks like in practice.</p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 20px 0;">
+      <div class="tool-card" onclick="alert('ChatGPT: Best for brainstorming, drafting, and explaining ideas. Use it for creative ideation, but verify facts and citations.')">
+        <div class="tool-card-title"><span class="tool-logo" style="background:linear-gradient(135deg,#10b981,#3b82f6);">GPT</span><h4>ChatGPT</h4></div>
+        <p><strong>Use for:</strong> brainstorming prompts, drafting outlines, generating questions, and explaining concepts in plain language.</p>
+        <p><strong>Benefits:</strong> very flexible and easy to use. Great for starting a task or exploring different angles.</p>
+        <small>Tip: use it for ideas, but verify any claim before citing it.</small>
+      </div>
+      <div class="tool-card" onclick="alert('Google Gemini: Best for planning, reasoning, and multimodal tasks. Investigate how Google handles data privacy and corporate AI principles.')">
+        <div class="tool-card-title"><span class="tool-logo" style="background:linear-gradient(135deg,#4285f4,#34a853,#fbbc05);">Gem</span><h4>Google Gemini</h4></div>
+        <p><strong>Use for:</strong> structured planning, reasoning tasks, and synthesising information with a polished assistant experience.</p>
+        <p><strong>Benefits:</strong> strong enterprise support and integration with Google ecosystems. Good for preparing teaching materials and summaries.</p>
+        <small>Tip: confirm their EU privacy policy and whether they support educational use cases.</small>
+      </div>
+      <div class="tool-card" onclick="alert('Perplexity: Use for academic search with citations. Good for finding sources, not for final writing.')">
+        <div class="tool-card-title"><span class="tool-logo" style="background:linear-gradient(135deg,#20b2aa,#00d4ff);">P</span><h4>Perplexity</h4></div>
+        <p><strong>Use for:</strong> scholarly research, source discovery, and citation-backed summaries.</p>
+        <p><strong>Benefits:</strong> quick literature scanning with source clues, good for early-stage research.</p>
+        <small>Tip: always follow citations to the original article.</small>
+      </div>
+      <div class="tool-card" onclick="alert('ChatPDF: Upload a research paper and ask questions directly about it. Lower risk because responses are tied to the document.')">
+        <div class="tool-card-title"><span class="tool-logo" style="background:linear-gradient(135deg,#dc2626,#f97316);">PDF</span><h4>ChatPDF</h4></div>
+        <p><strong>Use for:</strong> asking questions about a specific paper, checking definitions, and clarifying sections.</p>
+        <p><strong>Benefits:</strong> reduces hallucination risk when you stick to the uploaded document.</p>
+        <small>Tip: use it when you want precise support for a single source.</small>
+      </div>
+      <div class="tool-card" onclick="alert('Microsoft Copilot: Best for blending AI assistance into Microsoft 365 workflows for writing, summarising, and editing within familiar tools.')">
+        <div class="tool-card-title"><span class="tool-logo" style="background:linear-gradient(135deg,#0067b8,#7fba00);">Co</span><h4>Microsoft Copilot</h4></div>
+        <p><strong>Use for:</strong> drafting documents, summarising emails, and generating ideas inside Word, Teams, and Outlook.</p>
+        <p><strong>Benefits:</strong> integrates with familiar Microsoft apps and works well when you need productivity support.</p>
+        <small>Tip: check whether your institution has a Copilot education agreement before using it with coursework.</small>
+      </div>
+      <div class="tool-card" onclick="alert('Google NotebookLM: Best for creating notes, summaries, and research workflows from your own documents with Google account integration.')">
+        <div class="tool-card-title"><span class="tool-logo" style="background:linear-gradient(135deg,#4285f4,#34a853);">NB</span><h4>Google NotebookLM</h4></div>
+        <p><strong>Use for:</strong> turning notes and uploaded documents into summaries, explanations, and study workflows.</p>
+        <p><strong>Benefits:</strong> good for knowledge management when you want a guided research assistant.</p>
+        <small>Tip: review Google’s document privacy terms for NotebookLM before uploading school work.</small>
+      </div>
+      <div class="tool-card" onclick="alert('Explain Paper: Best for asking questions about academic research and getting easy-to-read explanations with source references from papers.')">
+        <div class="tool-card-title"><span class="tool-logo" style="background:linear-gradient(135deg,#f59e0b,#f97316);">EP</span><h4>Explain Paper</h4></div>
+        <p><strong>Use for:</strong> interpreting research papers, extracting key points, and understanding methods quickly.</p>
+        <p><strong>Benefits:</strong> useful for science reading and literature review support with more document grounding.</p>
+        <small>Tip: compare the summary with the original paper to catch missing nuance.</small>
+      </div>
+      <div class="tool-card" onclick="alert('Jenni AI: Best for writing drafts and revising academic text with AI-generated outlines and editing suggestions.')">
+        <div class="tool-card-title"><span class="tool-logo" style="background:linear-gradient(135deg,#0ea5e9,#14b8a6);">J</span><h4>Jenni AI</h4></div>
+        <p><strong>Use for:</strong> generating paragraph drafts, improving structure, and rewriting text for clarity.</p>
+        <p><strong>Benefits:</strong> supports academic writing with editable output and quick revision help.</p>
+        <small>Tip: always verify facts and citations after using a writing assistant.</small>
+      </div>
+    </div>
+    <p class="body-text" style="margin-top: 12px; font-size: 0.9rem;">For a full tool guide with mockups, see the <a href="https://buas.libguides.com/az/ai-tools" target="_blank">BUas AI Tools library ↗</a></p>
+  </section>
+
+  <hr>
+
+  <section class="section">
+    <h2>Check your knowledge</h2>
+    <p class="body-text">Test how well you understand the key concepts. Choose the assessment that matches your experience level:</p>
+    
+    <div class="assess-boxes">
+      <a class="assess-box" href="navigator/know-assess.html">
+        <div class="assess-label">🧭 Navigator track</div>
+        <div class="assess-title">Foundation check</div>
+        <div class="assess-desc">New to AI or building on basics. 3 questions on key concepts.</div>
+      </a>
+      <a class="assess-box" href="pilot/know-assess.html">
+        <div class="assess-label">✈️ Pilot track</div>
+        <div class="assess-title">Advanced check</div>
+        <div class="assess-desc">Already familiar with AI tools. 5 questions on critical evaluation and ethics.</div>
+      </a>
+    </div>
+  </section>
+
+</div>
+
+<script>
+function submitQuizAnswer(step) {
+  var answer = document.querySelector(`input[name="answer${step}"]:checked`);
+  var feedback = document.getElementById(`feedback${step}`);
+  var summary = document.getElementById('quiz-summary');
+  var correctAnswers = {1:'b',2:'a',3:'a'};
+  var correctText = {
+    1: 'Correct answer: b) The answer contains an exact statistic or citation but no source link.',
+    2: 'Correct answer: a) It prevents the model from inventing content outside the uploaded file.',
+    3: 'Correct answer: a) Check the citation in a library database or Google Scholar.'
+  };
+
+  if (!answer) {
+    feedback.style.display = 'block';
+    feedback.className = 'answer-feedback answer-wrong';
+    feedback.textContent = 'Pick one answer before you continue.';
+    return;
+  }
+
+  var isCorrect = answer.value === correctAnswers[step];
+  feedback.style.display = 'block';
+  feedback.className = 'answer-feedback ' + (isCorrect ? 'answer-correct' : 'answer-wrong');
+  feedback.textContent = (isCorrect ? 'Nice work! ' : 'Not quite. ') + correctText[step];
+
+  if (step < 3) {
+    setTimeout(function() { showNextQuestion(step + 1); }, 800);
+  } else {
+    summary.style.display = 'block';
+    summary.className = 'quiz-result ' + (document.querySelector('input[name="answer1"]:checked').value === 'b' && document.querySelector('input[name="answer2"]:checked').value === 'a' && document.querySelector('input[name="answer3"]:checked').value === 'a' ? 'result-good' : 'result-needs-work');
+    var score = 0;
+    for (var i = 1; i <= 3; i++) {
+      if (document.querySelector(`input[name="answer${i}"]:checked`).value === correctAnswers[i]) score++;
+    }
+    summary.textContent = score === 3 ? 'Excellent! You understood the verification logic well.' : `You got ${score}/3. Review the answers and try again if you want to sharpen your sense of hallucinations.`;
+  }
+}
+
+function showNextQuestion(nextStep) {
+  document.querySelectorAll('.question-step').forEach(function(step) { step.classList.remove('active'); });
+  document.getElementById('question' + nextStep).classList.add('active');
+}
+
+function toggleFlip(element) {
+  element.classList.toggle('flipped');
+}
+</script>
+
+</body>
+</html>
